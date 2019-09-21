@@ -1,4 +1,4 @@
-import { Component, Vue, Prop} from 'vue-property-decorator';
+import { Component, Prop, Emit} from 'vue-property-decorator';
 import { VueComponent } from '../../shims-vue';
 import {
   startOfMonth,
@@ -12,52 +12,47 @@ import {
   addMonths,
   getMonth,
   setMonth,
-  format
-} from "date-fns";
-  
-import "./style.sass";
-import "./../../assets/styles/elements/_arrow-button.sass";
+  format,
+} from 'date-fns';
 
-const DAY_LABELS = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"];
+import './style.sass';
+import './../../assets/styles/elements/_arrow-button.sass';
+
+const DAY_LABELS = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
 const MONTH_LABELS = [
-  "Январь",
-  "Февраль",
-  "Март",
-  "Апрель",
-  "Май",
-  "Июнь",
-  "Июль",
-  "Август",
-  "Сентябрь",
-  "Октябрь",
-  "Ноябрь",
-  "Декабрь"
+  'Январь',
+  'Февраль',
+  'Март',
+  'Апрель',
+  'Май',
+  'Июнь',
+  'Июль',
+  'Август',
+  'Сентябрь',
+  'Октябрь',
+  'Ноябрь',
+  'Декабрь',
 ];
 
-// interface Props {
-//   startDate: Date
-// }
-   
-  
+interface Props {
+  startDate?: Date;
+  onChangeMonth?: () => void;
+  changeDay?: () => void;
+  // [tasks: string]: string
+}
+
+
 @Component
 export default class Calendar extends VueComponent<Props> {
 
-  // @Prop()
-  // private startDate!: string;
+  @Prop()
+  public readonly startDate!: Date;
 
 
-  today: Date = new Date()
-  selectedDate = this.today
-  currDateCursor = this.today
-  dayLabels = DAY_LABELS.slice()
-
-  // created() {
-  //   this.dayLabels = DAY_LABELS.slice();
-  //   // this.today = new Date() || this.startDate;
-  //   this.today = new Date();
-  //   this.selectedDate = this.today;
-  //   this.currDateCursor = this.today;
-  // }
+  public today: Date = this.startDate || new Date();
+  public selectedDate = this.today;
+  public currDateCursor = this.today;
+  public dayLabels: string[] = DAY_LABELS.slice();
 
   get currentMonth() {
     return this.currDateCursor.getMonth();
@@ -66,18 +61,19 @@ export default class Calendar extends VueComponent<Props> {
   get currentYear() {
     return this.currDateCursor.getFullYear();
   }
-  
+
   get currentMonthLabel() {
     return MONTH_LABELS[this.currentMonth];
   }
 
   get dates() {
     const cursorDate = this.currDateCursor;
-    let startDate = startOfMonth(cursorDate),
-      endDate = lastDayOfMonth(cursorDate);
-    const daysNeededForLastMonth = getDay(startDate),
-      daysNeededForNextMonth =
-        7 - (getDay(endDate) + 1) > 6 ? 0 : 7 - getDay(endDate) - 1;
+    let startDate = startOfMonth(cursorDate);
+    let endDate = lastDayOfMonth(cursorDate);
+    const daysNeededForLastMonth = getDay(startDate);
+    const daysNeededForNextMonth = 7 - (getDay(endDate) + 1) > 6 ? 0 : 7 - getDay(endDate) - 1;
+
+
     startDate = addDays(startDate, -daysNeededForLastMonth);
     endDate = addDays(endDate, daysNeededForNextMonth);
 
@@ -88,62 +84,75 @@ export default class Calendar extends VueComponent<Props> {
         isToday: isToday(date),
         isSelected: isSameDay(this.selectedDate, date),
         // isActive: this.tasks.some(x => isSameDay(x.date, date)),
-        id: index
-      })
+        id: index,
+      }),
     );
   }
 
-  // mounted() {
-  //   if (this.startDate) {
-  //     this.currDateCursor = this.startDate;
-  //     this.selectedDate = this.startDate;
-  //   }
-  // },
 
-
-  dayClassObj(day) {
+  public dayClassObj(
+      day: {
+        date: Date;
+        isCurrentMonth: boolean;
+        isToday: boolean;
+        isSelected: boolean;
+        id?: number;
+        isActive: boolean;
+      },
+    ) {
     return {
       day: true,
       today: day.isToday,
       current: day.isCurrentMonth,
       selected: day.isSelected,
-      active: day.isActive
+      active: day.isActive,
     };
   }
 
-  nextMonth() {
+  // @Emit('changeMonth')
+  // nextMonth() {
+  //   this.currDateCursor = addMonths(this.currDateCursor, 1);
+  // }
+
+  public nextMonth() {
     this.currDateCursor = addMonths(this.currDateCursor, 1);
-    this.$emit("changeMonth", this.currDateCursor);
+    this.$emit('changeMonth', this.currDateCursor);
   }
 
-  previousMonth() {
+  public previousMonth() {
     this.currDateCursor = addMonths(this.currDateCursor, -1);
-    this.$emit("changeMonth", this.currDateCursor);
+    this.$emit('changeMonth', this.currDateCursor);
   }
 
-  setSelectedDate(day) {
+  public setSelectedDate(
+      day: {
+        date: Date;
+        isCurrentMonth: boolean;
+        isToday: boolean;
+        isSelected: boolean;
+        id?: number;
+      },
+    ) {
     this.selectedDate = day.date;
-    this.$emit("changeDay", this.selectedDate);
+    this.$emit('changeDay', this.selectedDate);
     if (!day.isCurrentMonth) {
       const selectedMonth = getMonth(this.selectedDate);
       this.currDateCursor = setMonth(this.currDateCursor, selectedMonth);
-      this.$emit("changeMonth", selectedMonth);
+      this.$emit('changeMonth', selectedMonth);
     }
   }
 
-  formatDateToDay(val) {
-    return format(val, "d");
+  public formatDateToDay(val: number | Date) {
+    return format(val, 'd');
   }
 
 
-  render() {
-    const headersJSX = this.dayLabels.map((item, index) => {
-      return <p class="calendar__headings" 
-      key={index}
-      > { item }</p>
-    })
+  public render() {
+    const headersJSX = this.dayLabels.map((item) => {
+      return <p class='calendar__headings' key={item}> { item }</p>;
+    });
 
-    const calendarJSX = this.dates.map(item => {      
+    const calendarJSX = this.dates.map((item) => {
       return <div
             class={this.dayClassObj(item)}
             key={item.id}
@@ -151,17 +160,17 @@ export default class Calendar extends VueComponent<Props> {
             <button onClick={ () => this.setSelectedDate(item) }>
               <span>{ this.formatDateToDay(item.date)  }</span>
             </button>
-          </div >
-    })
+          </div >;
+    });
     return (
-      <div class="calendar">
-        <header class="calendar__header">
-          <p class="title title_bold">{ this.currentMonthLabel } { this.currentYear }</p>
-          <div class="calendar__header-buttons">
-            <button class="button-arrow" onClick={ this.previousMonth }>
+      <div class='calendar'>
+        <header class='calendar__header'>
+          <p class='title title_bold'>{ this.currentMonthLabel } { this.currentYear }</p>
+          <div class='calendar__header-buttons'>
+            <button class='button-arrow' onClick={ this.previousMonth }>
               <span>&lt;</span>
             </button>
-            <button class="button-arrow" onClick={ this.nextMonth }>
+            <button class='button-arrow' onClick={ this.nextMonth }>
               <span>&gt;</span>
             </button>
           </div>
@@ -169,6 +178,6 @@ export default class Calendar extends VueComponent<Props> {
         { headersJSX }
         { calendarJSX }
       </div >
-    )
+    );
   }
 }

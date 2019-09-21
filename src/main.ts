@@ -2,8 +2,8 @@ import Vue from 'vue';
 import App from './App';
 import store from './store';
 
-//Styles
-import "./assets/styles/app.sass";
+// Styles
+import './assets/styles/app.sass';
 
 Vue.config.productionTip = false;
 
