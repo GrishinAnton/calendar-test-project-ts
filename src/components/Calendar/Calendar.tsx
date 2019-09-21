@@ -15,6 +15,7 @@ import {
   format,
 } from 'date-fns';
 
+
 import './style.sass';
 import './../../assets/styles/elements/_arrow-button.sass';
 
@@ -36,17 +37,19 @@ const MONTH_LABELS = [
 
 interface Props {
   startDate?: Date;
-  onChangeMonth?: () => void;
-  changeDay?: () => void;
-  // [tasks: string]: string
+  onChangeMonth?: any;
+  changeDay?: any;
+  tasks?: [];
 }
 
-
 @Component
-export default class Calendar extends VueComponent<Props> {
+export default class Calendar extends VueComponent<Props> {  
 
   @Prop()
   public readonly startDate!: Date;
+
+  @Prop()
+  public readonly tasks!: any
 
 
   public today: Date = this.startDate || new Date();
@@ -83,7 +86,7 @@ export default class Calendar extends VueComponent<Props> {
         isCurrentMonth: isSameMonth(cursorDate, date),
         isToday: isToday(date),
         isSelected: isSameDay(this.selectedDate, date),
-        // isActive: this.tasks.some(x => isSameDay(x.date, date)),
+        isActive: this.tasks.some((item: { date: Date; id: string; time: string; text: string; complete: boolean }) => isSameDay(item.date, date)),
         id: index,
       }),
     );
@@ -108,11 +111,6 @@ export default class Calendar extends VueComponent<Props> {
       active: day.isActive,
     };
   }
-
-  // @Emit('changeMonth')
-  // nextMonth() {
-  //   this.currDateCursor = addMonths(this.currDateCursor, 1);
-  // }
 
   public nextMonth() {
     this.currDateCursor = addMonths(this.currDateCursor, 1);
