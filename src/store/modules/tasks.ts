@@ -1,15 +1,15 @@
 import { Mutation, State, Getter, Action } from 'vuex-simple';
-import tasksData from "./../../data/tasks";
-import { isSameDay, isSameMonth } from "date-fns";
+import tasksData from './../../data/tasks';
+import { isSameDay, isSameMonth } from 'date-fns';
 
 export class TasksModule {
-  
-  public tasksData: any = tasksData
+
+  public tasksData: any = tasksData;
 
   @State()
   public tasks: any = [];
   public currentDayTasks: [] = [];
-  public addTaskState: boolean = true
+  public addTaskState: boolean = true;
 
 
   @Mutation()
@@ -29,7 +29,7 @@ export class TasksModule {
 
   @Mutation()
   public changeTask({ id, checked }) {
-    this.tasksData.map((item: { id: string; complete: boolean; }) => {
+    this.tasks.map((item: { id: string; complete: boolean; }) => {
       if (item.id === id) {
         item.complete = checked;
       }
@@ -38,12 +38,12 @@ export class TasksModule {
 
   @Action()
   public fetchTasks(payLoad: any) {
-    this.setTasks(this.tasksData.tasks.filter(item => isSameMonth(item.date, payLoad)))
+    this.setTasks(this.tasksData.tasks.filter((item) => isSameMonth(item.date, payLoad)));
   }
 
   @Action()
   public fetchTask(payLoad: any) {
-    this.setCurrentDayTasks(this.tasks.filter(item => isSameDay(item.date, payLoad)))
+    this.setCurrentDayTasks(this.tasks.filter((item) => isSameDay(item.date, payLoad)));
   }
 
   @Action()
@@ -54,10 +54,10 @@ export class TasksModule {
   }
 
   @Action()
-  public fetchAddTask(payLoad: any){
-    this.tasks.tasks.push(taskFactory(payLoad));
+  public fetchAddTask(payLoad: any) {
+    this.tasksData.tasks.push(taskFactory(payLoad));
 
-    this.fetchTasks(payLoad.date)
+    this.fetchTasks(payLoad.date);
     this.fetchTask(payLoad.date);
     this.setAddTaskState(true);
   }
@@ -66,17 +66,17 @@ export class TasksModule {
 
   @Getter()
   public get getTasks(): [] {
-    return this.tasks
+    return this.tasks;
   }
 
   @Getter()
   public get getCurrentDayTasks(): [] {
-    return this.currentDayTasks
+    return this.currentDayTasks;
   }
 
   @Getter()
   public get getAddTaskState(): boolean {
-    return this.addTaskState
+    return this.addTaskState;
   }
 
 }
@@ -84,9 +84,9 @@ export class TasksModule {
 function taskFactory({ time, text, date }) {
   return {
     id: String(Math.floor(Math.random() * 100)),
-    time: time,
-    text: text,
+    time,
+    text,
     complete: false,
-    date: date
+    date,
   };
 }

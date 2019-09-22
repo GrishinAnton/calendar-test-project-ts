@@ -1,4 +1,4 @@
-import { Component, Prop, Emit} from 'vue-property-decorator';
+import { Component, Prop} from 'vue-property-decorator';
 import { VueComponent } from '../../shims-vue';
 import {
   startOfMonth,
@@ -38,18 +38,18 @@ const MONTH_LABELS = [
 interface Props {
   startDate?: Date;
   onChangeMonth?: any;
-  changeDay?: any;
+  onChangeDay?: any;
   tasks?: [];
 }
 
 @Component
-export default class Calendar extends VueComponent<Props> {  
+export default class Calendar extends VueComponent<Props> {
 
   @Prop()
   public readonly startDate!: Date;
 
   @Prop()
-  public readonly tasks!: any
+  public readonly tasks!: [];
 
 
   public today: Date = this.startDate || new Date();
@@ -73,8 +73,9 @@ export default class Calendar extends VueComponent<Props> {
     const cursorDate = this.currDateCursor;
     let startDate = startOfMonth(cursorDate);
     let endDate = lastDayOfMonth(cursorDate);
-    const daysNeededForLastMonth = getDay(startDate);
-    const daysNeededForNextMonth = 7 - (getDay(endDate) + 1) > 6 ? 0 : 7 - getDay(endDate) - 1;
+
+    const daysNeededForLastMonth = getDay(startDate) - 1 < 0 ? 6 : getDay(startDate) - 1;
+    const daysNeededForNextMonth = getDay(endDate) === 0 ? 0 : 7 - getDay(endDate);
 
 
     startDate = addDays(startDate, -daysNeededForLastMonth);
@@ -86,7 +87,14 @@ export default class Calendar extends VueComponent<Props> {
         isCurrentMonth: isSameMonth(cursorDate, date),
         isToday: isToday(date),
         isSelected: isSameDay(this.selectedDate, date),
-        isActive: this.tasks.some((item: { date: Date; id: string; time: string; text: string; complete: boolean }) => isSameDay(item.date, date)),
+        isActive: this.tasks.some((
+          item: {
+            date: Date;
+            id: string;
+            time: string;
+            text: string;
+            complete: boolean },
+          ) => isSameDay(item.date, date)),
         id: index,
       }),
     );

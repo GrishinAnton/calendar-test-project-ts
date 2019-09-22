@@ -1,41 +1,35 @@
 import { Component, Vue } from 'vue-property-decorator';
 import Calendar from './components/Calendar/Calendar';
-// import Tasks from "./components/Tasks/Tasks";
-import { useStore, useModule } from 'vuex-simple'
-import { MyStore } from './store/store'
+import Tasks from './components/Tasks/Tasks';
+import { useModule } from 'vuex-simple';
 import { TasksModule } from './store/modules/tasks';
 
 @Component
 export default class App extends Vue {
 
   public currentDate = new Date();
-  public tasks: TasksModule = useModule(this.$store, ['tasks']);
-
-  mounted() {    
-
-    console.log(this.tasks, 'typedStore');
-  }
+  public tasksStore: TasksModule = useModule(this.$store, ['tasks']);
 
   get getTasks() {
-    return this.tasks.getTasks;
+    return this.tasksStore.getTasks;
   }
 
   get getCurrentDayTasks() {
-    return this.tasks.getCurrentDayTasks
+    return this.tasksStore.getCurrentDayTasks;
   }
 
   public changeMonth(date: Date) {
-    this.tasks.fetchTasks(date);
+    this.tasksStore.fetchTasks(date);
   }
 
   public changeDay(date: Date) {
     this.currentDate = date;
-    this.tasks.fetchTask(date);
+    this.tasksStore.fetchTask(date);
   }
 
-  public async created() {
-    await this.tasks.fetchTasks(this.currentDate);
-    this.tasks.fetchTask(this.currentDate);
+  public created() {
+    this.tasksStore.fetchTasks(this.currentDate);
+    this.tasksStore.fetchTask(this.currentDate);
   }
 
 
@@ -46,10 +40,12 @@ export default class App extends Vue {
           <Calendar
             startDate={ new Date() }
             onChangeMonth={ this.changeMonth }
-            changeDay={ this.changeDay }
+            onChangeDay={ this.changeDay }
             tasks={ this.getTasks }
           ></Calendar>
-          {/* <Tasks  tasks="getCurrentDayTasks" currentDate="currentDate" /> */}
+          <Tasks
+            currentDate={ this.currentDate }
+            currentDayTasks={ this.getCurrentDayTasks } />
         </div>
       </div>
     );

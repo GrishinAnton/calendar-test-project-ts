@@ -7,5 +7,5 @@ export class MyStore {
   public tasks = new TasksModule();
 
   @State()
-  public version = "2.0.0";
+  public version = '2.0.0';
 }
