@@ -9,7 +9,7 @@ describe("My First Test", () => {
   const openAddTaskContainer = () => cy.get("[data-cy='add-task-button']");
 
   it("Visits the app root url", () => {
-    cy.visit("http://localhost:8080/");
+    cy.visit("http://localhost:3030/");
   });
 
   it("Add task", () => {

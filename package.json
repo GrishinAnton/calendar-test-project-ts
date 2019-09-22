@@ -6,11 +6,16 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "test:e2e": "vue-cli-service test:e2e"
+    "test:e2e": "vue-cli-service test:e2e",
+    "cy:run": "cypress run",
+    "start": "serve -p 3030",
+    "test": "start-server-and-test start http://localhost:3030 cy:run"
   },
   "dependencies": {
     "core-js": "^2.6.5",
     "date-fns": "^2.2.1",
+    "serve": "^11.1.0",
+    "start-server-and-test": "^1.10.2",
     "vue": "^2.6.10",
     "vue-class-component": "^7.0.2",
     "vue-property-decorator": "^8.1.0",
