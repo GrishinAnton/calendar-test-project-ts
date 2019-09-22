@@ -1,4 +1,3 @@
-import * as Types from '../../../lib/type/type';
 import { Component, Prop } from 'vue-property-decorator';
 import { VueComponent } from '../../../shims-vue';
 // import Types from '../../../lib/type/type'
