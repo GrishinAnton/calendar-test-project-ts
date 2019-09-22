@@ -8,7 +8,7 @@ import { TasksModule } from './store/modules/tasks';
 export default class App extends Vue {
 
   public currentDate = new Date();
-  public tasksStore: TasksModule = useModule(this.$store, ['tasks']);
+  public tasksStore: TasksModule | any = useModule(this.$store, ['tasks']);
 
   get getTasks() {
     return this.tasksStore.getTasks;

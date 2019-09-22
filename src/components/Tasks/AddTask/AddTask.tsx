@@ -22,11 +22,11 @@ export default class AddTask extends VueComponent<Props> {
   public timeValid: boolean = false;
   public timeValidationPattern: RegExp = /[0-2][0-9]:[0-5][0-9]/;
 
-  public async timeChange(e) {
+  public async timeChange(e: { target: { value: string; }; }) {
     const value = e.target.value;
     this.time = value;
 
-    function delay(ms) {
+    function delay(ms: number) {
       return new Promise((resolve) => {
         setTimeout(resolve, ms);
       });
@@ -49,16 +49,16 @@ export default class AddTask extends VueComponent<Props> {
     }
   }
 
-  public textChange(e) {
+  public textChange(e: { target: { value: string; }; }) {
     this.text = e.target.value;
   }
 
-  public timeValidation(time) {
+  public timeValidation(time: string) {
     const valid = this.timeValidationPattern.test(time);
     return valid;
   }
 
-  public saveTaskOnEnter(e) {
+  public saveTaskOnEnter(e: { charCode: number; }) {
     if (e.charCode === 13) {
       this.saveTask();
     }
@@ -135,9 +135,7 @@ export default class AddTask extends VueComponent<Props> {
 
     return (
       <div class='add-task'>
-        {
-          container
-        }
+        { container }
       </div >
     );
   }

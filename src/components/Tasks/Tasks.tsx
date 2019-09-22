@@ -13,10 +13,12 @@ interface Props {
   currentDayTasks?: [];
 }
 
+interface Task { id: string; time: string; text: string; complete: boolean; date: Date; }
+
 @Component
 export default class Tasks extends VueComponent<Props> {
 
-  public tasksStore: TasksModule = useModule(this.$store, ['tasks']);
+  public tasksStore: TasksModule | any = useModule(this.$store, ['tasks']);
 
   @Prop()
   public readonly currentDayTasks!: [];
@@ -25,13 +27,13 @@ export default class Tasks extends VueComponent<Props> {
   public readonly currentDate!: Date;
 
   get getCurrentDateTasks() {
-    return this.currentDayTasks.filter((task) => isSameDay(task.date, this.currentDate));
+    return this.currentDayTasks.filter((task: {date: Date}) => isSameDay(task.date, this.currentDate));
   }
   get getAddTaskState() {
     return this.tasksStore.getAddTaskState;
   }
 
-  public btnHandler({ event, time, text }) {
+  public btnHandler({ event, time, text }: {event: string, time: string, text: string}) {
     switch (event) {
       case 'addTask':
         this.tasksStore.setAddTaskState(false);
@@ -49,13 +51,13 @@ export default class Tasks extends VueComponent<Props> {
     }
   }
 
-  public change(task) {
+  public change(task: object) {
     this.tasksStore.fetchChangeTask(task);
   }
 
   public render() {
 
-    const itemTaskJSX = this.getCurrentDateTasks.map((item) => {
+    const itemTaskJSX = this.getCurrentDateTasks.map((item: Task) => {
       return (
         <ItemTask
           task={item}

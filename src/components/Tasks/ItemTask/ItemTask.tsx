@@ -1,10 +1,14 @@
+import * as Types from '../../../lib/type/type';
 import { Component, Prop } from 'vue-property-decorator';
 import { VueComponent } from '../../../shims-vue';
+// import Types from '../../../lib/type/type'
 
 import './style.sass';
 
+interface Task { id: string; time: string; text: string; complete: boolean; date: Date; }
+
 interface Props {
-  task: object;
+  task: Task;
   onChange?: any;
 }
 
@@ -12,9 +16,9 @@ interface Props {
 export default class ItemTask extends VueComponent<Props> {
 
   @Prop()
-  public readonly task!: object;
+  public readonly task!: Task;
 
-  public change(event) {
+  public change(event: { target: { checked: boolean; }; }) {
     this.$emit('change', { id: this.task.id, checked: event.target.checked });
   }
 

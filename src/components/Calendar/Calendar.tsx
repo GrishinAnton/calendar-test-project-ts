@@ -42,6 +42,8 @@ interface Props {
   tasks?: [];
 }
 
+interface Task { id: string; time: string; text: string; complete: boolean; date: Date; }
+
 @Component
 export default class Calendar extends VueComponent<Props> {
 
@@ -88,12 +90,7 @@ export default class Calendar extends VueComponent<Props> {
         isToday: isToday(date),
         isSelected: isSameDay(this.selectedDate, date),
         isActive: this.tasks.some((
-          item: {
-            date: Date;
-            id: string;
-            time: string;
-            text: string;
-            complete: boolean },
+          item: Task,
           ) => isSameDay(item.date, date)),
         id: index,
       }),

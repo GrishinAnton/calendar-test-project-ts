@@ -1,5 +1,5 @@
 import { Mutation, State, Getter, Action } from 'vuex-simple';
-import tasksData from './../../data/tasks';
+import tasksData from '../../lib/data/tasks';
 import { isSameDay, isSameMonth } from 'date-fns';
 
 export class TasksModule {
@@ -28,7 +28,7 @@ export class TasksModule {
   }
 
   @Mutation()
-  public changeTask({ id, checked }) {
+  public changeTask({ id, checked }: {id: string, checked: boolean}) {
     this.tasks.map((item: { id: string; complete: boolean; }) => {
       if (item.id === id) {
         item.complete = checked;
@@ -38,12 +38,12 @@ export class TasksModule {
 
   @Action()
   public fetchTasks(payLoad: any) {
-    this.setTasks(this.tasksData.tasks.filter((item) => isSameMonth(item.date, payLoad)));
+    this.setTasks(this.tasksData.tasks.filter((item: { date: Date; }) => isSameMonth(item.date, payLoad)));
   }
 
   @Action()
   public fetchTask(payLoad: any) {
-    this.setCurrentDayTasks(this.tasks.filter((item) => isSameDay(item.date, payLoad)));
+    this.setCurrentDayTasks(this.tasks.filter((item: { date: Date; }) => isSameDay(item.date, payLoad)));
   }
 
   @Action()
@@ -81,7 +81,7 @@ export class TasksModule {
 
 }
 
-function taskFactory({ time, text, date }) {
+function taskFactory({ time, text, date }: {time: string, text: string, date: Date}) {
   return {
     id: String(Math.floor(Math.random() * 100)),
     time,
