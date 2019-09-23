@@ -8,8 +8,8 @@
     "lint": "vue-cli-service lint",
     "test:e2e": "vue-cli-service test:e2e",
     "cy:run": "cypress run",
-    "start": "serve -s dist -p 3030",
-    "test": "start-server-and-test start http://localhost:3030 cy:run"
+    "start": "serve -s dist -p 8080",
+    "test": "start-server-and-test start http://localhost:8080 cy:run"
   },
   "dependencies": {
     "core-js": "^2.6.5",
