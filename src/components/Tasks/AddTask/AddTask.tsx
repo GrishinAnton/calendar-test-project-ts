@@ -121,7 +121,7 @@ export default class AddTask extends VueComponent<Props> {
         <div class='add-task__control'>
           <Button
             color='blue'
-            onClick='cancelTask'>Отмена</Button>
+            onClick={this.cancelTask}>Отмена</Button>
         < Button
               disabled={!(this.time && this.text)}
               color='blue'
